@@ -1,7 +1,7 @@
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
-#include "blas-private.h"
+#include "f77blas.h"
 #include "blas.h"
 
 /* Level 1 */

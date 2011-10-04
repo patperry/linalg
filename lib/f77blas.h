@@ -1,17 +1,7 @@
-#ifndef BLAS_PRIVATE_H
-#define BLAS_PRIVATE_H
+#ifndef F77BLAS_H
+#define F77BLAS_H
 
-#ifndef f77int
-# ifdef HAVE_BLAS64
-#  define f77int long long int
-# else
-#  define f77int long int
-# endif
-#endif
-
-#ifndef F77_FUNC
-# define F77_FUNC(f) f ## _
-#endif
+#include "f77.h"
 
 #define F77_INT(n) f77int n ## _ = (f77int) n
 
@@ -231,4 +221,4 @@ extern void F77_FUNC(dsyr2k) (const char *uplo,
 			      const f77int *ldb,
 			      const double *beta, double *c, const f77int *ldc);
 
-#endif /* BLAS_PRIVATE_H */
+#endif /* F77BLAS_H */
