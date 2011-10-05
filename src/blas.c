@@ -27,7 +27,7 @@ size_t blas_idamax(size_t n, const double *x, size_t incx)
 	F77_INT(n);
 	F77_INT(incx);
 	f77int imax = F77_FUNC(idamax)(&n_, x, &incx_);
-	return (size_t)(imax - 1);
+	return (size_t)imax;
 }
 
 void blas_dswap(size_t n, double *x, size_t incx, double *y, size_t incy)
