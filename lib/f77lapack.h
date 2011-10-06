@@ -3,6 +3,12 @@
 
 #include "f77.h"
 
+#define F77_SVDJOB(j) const char *j ## _ = (j == LA_SVD_ALL ? "A" \
+					    : j == LA_SVD_SEP ? "S" \
+					    : j == LA_SVD_OVER ? "O" : "N")
+#define F77_EIGJOB(j) const char *j ## _ = (j == LA_EIG_VEC ? "V" : "N")
+
+
 int F77_FUNC(dgesdd) (const char *jobz, const f77int *m, const f77int *n,
 		      double *a, const f77int *lda, double *s, double *u,
 		      const f77int *ldu, double *vt, const f77int *ldvt,

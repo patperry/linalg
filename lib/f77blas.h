@@ -5,16 +5,13 @@
 
 #define F77_INT(n) f77int n ## _ = (f77int) n
 
-#define F77_TRANS(t) const char *t ## _ = BLAS_TRANS_STR[t - BLAS_NOTRANS]
-#define F77_UPLO(u) const char *u ## _ = BLAS_UPLO_STR[u - BLAS_UPPER]
-#define F77_DIAG(d) const char *d ## _ = BLAS_DIAG_STR[d - BLAS_NONUNIT]
-#define F77_SIDE(s) const char *s ## _ = BLAS_SIDE_STR[s - BLAS_LEFT]
+#define F77_TRANS(t) const char *t ## _ = (t == BLAS_TRANS ? "T" \
+		 			   : t == BLAS_CONJTRANS ? "C" : "N")
+#define F77_UPLO(u) const char *u ## _ = (u == BLAS_LOWER ? "L" : "U")
+#define F77_DIAG(d) const char *d ## _ = (d == BLAS_UNIT ? "U" : "D")
+#define F77_SIDE(s) const char *s ## _ = (s == BLAS_RIGHT ? "R" : "L")
 
 
-static const char *BLAS_TRANS_STR[] = { "N", "T", "C" };
-static const char *BLAS_UPLO_STR[] = { "U", "L" };
-static const char *BLAS_DIAG_STR[] = { "N", "U" };
-static const char *BLAS_SIDE_STR[] = { "L", "R" };
 
 
 extern double F77_FUNC(ddot) (const f77int *n,
