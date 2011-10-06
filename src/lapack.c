@@ -105,7 +105,8 @@ ptrdiff_t lapack_dsysv(enum blas_uplo uplo, size_t n, size_t nrhs,
 
 	F77_FUNC(dsysv)(uplo_, &n_, &nrhs_, a, &lda_, (f77int *)ipiv, b,
 			&ldb_, work, &lwork_, &info);
-	f77int_unpack(ipiv, n);
+	if (ipiv)
+		f77int_unpack(ipiv, n);
 
 	return (ptrdiff_t)info;
 }
