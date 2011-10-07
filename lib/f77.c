@@ -11,7 +11,10 @@ void f77int_pack(ptrdiff_t *base, size_t n)
 	assert(sizeof(ptrdiff_t) == 2 * sizeof(f77int));
 
 	union fcint *arr = (union fcint *)base;
-	ptrdiff_t i, j;
+	size_t i, j;
+
+	if (!n)
+		return;
 
 	for (i = 0, j = 0; i < n - 1; i += 2, j++) {
 		arr[j].f[0] = arr[i].c;
