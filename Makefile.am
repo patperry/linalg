@@ -16,5 +16,7 @@ liblinalg_la_SOURCES = \
 		src/blas.c \
 		src/blas.h \
 		src/lapack.c \
-		src/lapack.h
+		src/lapack.h \
+		src/sblas.c \
+		src/sblas.h
 
