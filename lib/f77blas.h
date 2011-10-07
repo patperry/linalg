@@ -11,9 +11,6 @@
 #define F77_DIAG(d) const char *d ## _ = (d == BLAS_UNIT ? "U" : "D")
 #define F77_SIDE(s) const char *s ## _ = (s == BLAS_RIGHT ? "R" : "L")
 
-
-
-
 extern double F77_FUNC(ddot) (const f77int *n,
 			      const double *x,
 			      const f77int *incx,
