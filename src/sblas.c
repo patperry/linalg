@@ -55,3 +55,28 @@ void sblas_dsctr(size_t nz, const double *x, const ptrdiff_t *indx, double *y)
 		y[indx[i]] = x[i];
 	}
 }
+
+
+void svector_slice(ptrdiff_t off, size_t dim,
+		   size_t *nzp, const double **xp, const ptrdiff_t **indxp)
+{
+	size_t iz, nz = *nzp;
+	const double *x = *xp;
+	const ptrdiff_t *indx = *indxp;
+
+	while (nz > 0 && indx[0] < off) {
+		nz--;
+		x--;
+		indx--;
+	}
+
+	for (iz = 0; iz < nz; iz++) {
+		if ((size_t)(indx[iz] - off) >= dim)
+			break;
+	}
+	nz = iz;
+
+	*nzp = nz;
+	*xp = x;
+	*indxp = indx;
+}
