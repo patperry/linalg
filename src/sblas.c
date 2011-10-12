@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "sblas.h"
 
 /* y[indx[i]] += alpha * x[i] for i = 0, ..., nz-1 */
@@ -56,27 +57,22 @@ void sblas_dsctr(size_t nz, const double *x, const ptrdiff_t *indx, double *y)
 	}
 }
 
-
-void svector_slice(ptrdiff_t off, size_t dim,
-		   size_t *nzp, const double **xp, const ptrdiff_t **indxp)
+ptrdiff_t sblas_find(size_t nz, const ptrdiff_t *indx, ptrdiff_t i)
 {
-	size_t iz, nz = *nzp;
-	const double *x = *xp;
-	const ptrdiff_t *indx = *indxp;
+	const ptrdiff_t *begin = indx, *end = indx + nz, *ptr;
 
-	while (nz > 0 && indx[0] < off) {
-		nz--;
-		x--;
-		indx--;
+	while (begin < end) {
+		ptr = begin + ((end - begin) >> 1);
+		if (*ptr < i) {
+			begin = ptr + 1;
+		} else if (*ptr > i) {
+			end = ptr;
+		} else {
+			return ptr - indx;
+		}
 	}
+	assert(begin == end);
 
-	for (iz = 0; iz < nz; iz++) {
-		if ((size_t)(indx[iz] - off) >= dim)
-			break;
-	}
-	nz = iz;
-
-	*nzp = nz;
-	*xp = x;
-	*indxp = indx;
+	ptrdiff_t ix = begin - indx;
+	return ~ix;
 }

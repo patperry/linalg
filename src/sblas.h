@@ -20,9 +20,6 @@ void sblas_dgthrz(size_t nz, double *y, double *x, const ptrdiff_t *indx);
 /* y[indx[i]] = x[i] for i = 0, ..., nz-1 */
 void sblas_dsctr(size_t nz, const double *x, const ptrdiff_t *indx, double *y);
 
-
-
-void svector_slice(ptrdiff_t off, size_t dim,
-		   size_t *nzp, const double **xp, const ptrdiff_t **indxp);
+ptrdiff_t sblas_find(size_t nz, const ptrdiff_t *indx, ptrdiff_t i);
 
 #endif /* LINALG_SBLAS_H */
