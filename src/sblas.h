@@ -2,6 +2,7 @@
 #define LINALG_SBLAS_H
 
 #include <stddef.h>
+#include "blas.h"
 
 /* y[indx[i]] += alpha * x[i] for i = 0, ..., nz-1 */
 void sblas_daxpyi(size_t nz, double alpha, const double *x,
