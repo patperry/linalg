@@ -1,4 +1,6 @@
 #include <assert.h>
+#include "blas.h"
+#include <string.h>
 #include "sblas.h"
 
 /* y[indx[i]] += alpha * x[i] for i = 0, ..., nz-1 */
@@ -54,6 +56,38 @@ void sblas_dsctr(size_t nz, const double *x, const size_t *indx, double *y)
 
 	for (i = 0; i < nz; i++) {
 		y[indx[i]] = x[i];
+	}
+}
+
+void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n, size_t nz,
+		  double alpha, const double *a, size_t lda, const double *x,
+		  const size_t *indx, double beta, double *y)
+{
+
+	if (trans == BLAS_NOTRANS) {
+		size_t i;
+
+		if (beta == 0) {
+			memset(y, 0, m * sizeof(y[0]));
+		} else if (beta != 1) {
+			blas_dscal(m, beta, y, 1);
+		}
+
+		for (i = 0; i < nz; i++) {
+			blas_daxpy(m, alpha * x[i], a + indx[i] * lda, 1, y, 1);
+		}
+	} else {
+		size_t j;
+
+		if (beta == 0) {
+			memset(y, 0, n * sizeof(y[0]));
+		} else if (beta != 1) {
+			blas_dscal(n, beta, y, 1);
+		}
+
+		for (j = 0; j < n; j++) {
+			y[j] += alpha * sblas_ddoti(nz, x, indx, a + j * lda);
+		}
 	}
 }
 
