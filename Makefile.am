@@ -17,6 +17,8 @@ liblinalg_la_SOURCES = \
 		src/blas.h \
 		src/lapack.c \
 		src/lapack.h \
+		src/matrixutil.c \
+		src/matrixutil.h \
 		src/sblas.c \
 		src/sblas.h
 
