@@ -43,6 +43,18 @@ size_t lapack_dgesdd_lwork(enum lapack_svdjob jobz, size_t m, size_t n,
 	return (size_t)work;
 }
 
+void lapack_dlacpy(enum lapack_copyjob uplo, size_t m, size_t n,
+		   const double *a, size_t lda, double *b, size_t ldb)
+{
+	F77_COPYJOB(uplo);
+	F77_INT(m);
+	F77_INT(n);
+	F77_INT(lda);
+	F77_INT(ldb);
+
+	F77_FUNC(dlacpy) (uplo_, &m_, &n_, a, &lda_, b, &ldb_);
+}
+
 ptrdiff_t lapack_dposv(enum blas_uplo uplo, size_t n, size_t nrhs,
 		       double *a, size_t lda, double *b, size_t ldb)
 {

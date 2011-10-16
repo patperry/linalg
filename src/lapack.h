@@ -4,6 +4,12 @@
 #include <stddef.h>
 #include "blas.h"
 
+enum lapack_copyjob {
+	LA_COPY_UPPER = BLAS_UPPER,
+	LA_COPY_LOWER = BLAS_LOWER,
+	LA_COPY_ALL
+};
+
 enum lapack_eigjob {
 	LA_EIG_NOVEC,
 	LA_EIG_VEC
@@ -23,6 +29,9 @@ ptrdiff_t lapack_dgesdd(enum lapack_svdjob jobz, size_t m, size_t n,
 
 size_t lapack_dgesdd_lwork(enum lapack_svdjob jobz, size_t m, size_t n,
 			   size_t *liwork);
+
+void lapack_dlacpy(enum lapack_copyjob uplo, size_t m, size_t n,
+		   const double *a, size_t lda, double *b, size_t ldb);
 
 ptrdiff_t lapack_dposv(enum blas_uplo uplo, size_t n, size_t nrhs,
 		       double *a, size_t lda, double *b, size_t ldb);
