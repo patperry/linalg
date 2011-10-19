@@ -22,6 +22,13 @@ double blas_dasum(size_t n, const double *x, size_t incx)
 	return F77_FUNC(dasum) (&n_, x, &incx_);
 }
 
+double blas_dnrm2(size_t n, const double *x, size_t incx)
+{
+	F77_INT(n);
+	F77_INT(incx);
+	return F77_FUNC(dnrm2) (&n_, x, &incx_);
+}
+
 size_t blas_idamax(size_t n, const double *x, size_t incx)
 {
 	F77_INT(n);
