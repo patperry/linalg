@@ -62,27 +62,22 @@ void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n, size_t nz,
 		  double alpha, const double *a, size_t lda, const double *x,
 		  const size_t *indx, double beta, double *y)
 {
+	size_t ny = (trans == BLAS_NOTRANS ? m : n);
+
+	if (beta == 0) {
+		memset(y, 0, ny * sizeof(y[0]));
+	} else if (beta != 1) {
+		blas_dscal(ny, beta, y, 1);
+	}
 
 	if (trans == BLAS_NOTRANS) {
 		size_t i;
-
-		if (beta == 0) {
-			memset(y, 0, m * sizeof(y[0]));
-		} else if (beta != 1) {
-			blas_dscal(m, beta, y, 1);
-		}
 
 		for (i = 0; i < nz; i++) {
 			blas_daxpy(m, alpha * x[i], a + indx[i] * lda, 1, y, 1);
 		}
 	} else {
 		size_t j;
-
-		if (beta == 0) {
-			memset(y, 0, n * sizeof(y[0]));
-		} else if (beta != 1) {
-			blas_dscal(n, beta, y, 1);
-		}
 
 		for (j = 0; j < n; j++) {
 			y[j] += alpha * sblas_ddoti(nz, x, indx, a + j * lda);
@@ -108,4 +103,38 @@ ptrdiff_t sblas_find(size_t nz, const size_t *indx, size_t i)
 
 	ptrdiff_t ix = begin - indx;
 	return ~ix;
+}
+
+
+
+void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
+		  const double *a, const size_t *inda, const size_t *offa,
+		  const double *x, double beta, double *y)
+{
+	size_t ny = (trans == BLAS_NOTRANS ? m : n);
+	size_t j;
+
+	if (beta == 0) {
+		memset(y, 0, ny * sizeof(y[0]));
+	} else if (beta != 1) {
+		blas_dscal(ny, beta, y, 1);
+	}
+
+	if (trans == BLAS_NOTRANS) {
+		for (j = 0; j < n; j++) {
+			size_t nz = offa[j+1] - offa[j];
+			const double *val = a + offa[j];
+			const size_t *ind = inda + offa[j];
+
+			sblas_daxpyi(nz, alpha * x[j], val, ind, y);
+		}
+	} else {
+		for (j = 0; j < n; j++) {
+			size_t nz = offa[j+1] - offa[j];
+			const double *val = a + offa[j];
+			const size_t *ind = inda + offa[j];
+
+			y[j] += alpha * sblas_ddoti(nz, val, ind, x);
+		}
+	}
 }
