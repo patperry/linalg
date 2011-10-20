@@ -138,3 +138,33 @@ void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 		}
 	}
 }
+
+
+void sblas_dcscsctr(enum blas_trans trans, size_t n,
+		    const double *a, const size_t *inda, const size_t *offa,
+		    double *b, size_t ldb)
+{
+	size_t j;
+
+	if (trans == BLAS_NOTRANS) {
+		for (j = 0; j < n; j++) {
+			const double *val = a + offa[j];
+			const size_t *ind = inda + offa[j];
+			size_t iz, nz = offa[j+1] - offa[j];
+
+			for (iz = 0; iz < nz; iz++) {
+				b[ind[iz] + j * ldb] = val[iz];
+			}
+		}
+	} else {
+		for (j = 0; j < n; j++) {
+			const double *val = a + offa[j];
+			const size_t *ind = inda + offa[j];
+			size_t iz, nz = offa[j+1] - offa[j];
+
+			for (iz = 0; iz < nz; iz++) {
+				b[j + ind[iz] * ldb] = val[iz];
+			}
+		}
+	}
+}

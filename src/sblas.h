@@ -33,11 +33,12 @@ void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n, size_t nz,
 		  double alpha, const double *a, size_t lda, const double *x,
 		  const size_t *indx, double beta, double *y);
 
-
 void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 		  const double *a, const size_t *inda, const size_t *offa,
 		  const double *x, double beta, double *y);
 
-
+void sblas_dcscsctr(enum blas_trans trans, size_t n,
+		    const double *a, const size_t *inda, const size_t *offa,
+		    double *b, size_t ldb);
 
 #endif /* LINALG_SBLAS_H */
