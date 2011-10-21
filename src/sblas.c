@@ -87,25 +87,21 @@ void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n, size_t nz,
 
 ptrdiff_t sblas_find(size_t nz, const size_t *indx, size_t i)
 {
-	const size_t *begin = indx, *end = indx + nz, *ptr;
+	const size_t *base = indx, *ptr;
 
-	while (begin < end) {
-		ptr = begin + ((end - begin) >> 1);
-		if (*ptr < i) {
-			begin = ptr + 1;
-		} else if (*ptr > i) {
-			end = ptr;
-		} else {
+	for (; nz != 0; nz >>= 1) {
+		ptr = base + (nz >> 1);
+		if (i == *ptr)
 			return ptr - indx;
+		if (i > *ptr) {
+			base = ptr + 1;
+			nz--;
 		}
 	}
-	assert(begin == end);
 
-	ptrdiff_t ix = begin - indx;
+	ptrdiff_t ix = base - indx;
 	return ~ix;
 }
-
-
 
 void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 		  const double *a, const size_t *inda, const size_t *offa,
