@@ -101,21 +101,22 @@ void blas_dscal(size_t n, double alpha, double *x, size_t incx)
 /* Level 2 */
 
 void blas_dgemv(enum blas_trans trans, size_t m, size_t n, double alpha,
-		const double *a, size_t lda, const double *x, size_t incx,
+		const struct dmatrix *a, const double *x, size_t incx,
 		double beta, double *y, size_t incy)
+
 {
 	F77_TRANS(trans);
 	F77_INT(m);
 	F77_INT(n);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(incx);
 	F77_INT(incy);
-	F77_FUNC(dgemv) (trans_, &m_, &n_, &alpha, a, &lda_, x, &incx_,
+	F77_FUNC(dgemv) (trans_, &m_, &n_, &alpha, a_, &lda_, x, &incx_,
 			 &beta, y, &incy_);
 }
 
 void blas_dgbmv(enum blas_trans trans, size_t m, size_t n, size_t kl, size_t ku,
-		double alpha, const double *a, size_t lda,
+		double alpha, const struct dmatrix *a,
 		const double *x, size_t incx, double beta, double *y,
 		size_t incy)
 {
@@ -124,24 +125,25 @@ void blas_dgbmv(enum blas_trans trans, size_t m, size_t n, size_t kl, size_t ku,
 	F77_INT(n);
 	F77_INT(kl);
 	F77_INT(ku);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(incx);
 	F77_INT(incy);
-	F77_FUNC(dgbmv) (trans_, &m_, &n_, &kl_, &ku_, &alpha, a, &lda_, x,
+	F77_FUNC(dgbmv) (trans_, &m_, &n_, &kl_, &ku_, &alpha, a_, &lda_, x,
 			 &incx_, &beta, y, &incy_);
 }
 
 void blas_dsbmv(enum blas_uplo uplo, size_t n, size_t k, double alpha,
-		const double *a, size_t lda, const double *x, size_t incx,
+		const struct dmatrix *a, const double *x, size_t incx,
 		double beta, double *y, size_t incy)
+
 {
 	F77_UPLO(uplo);
 	F77_INT(n);
 	F77_INT(k);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(incx);
 	F77_INT(incy);
-	F77_FUNC(dsbmv) (uplo_, &n_, &k_, &alpha, a, &lda_, x, &incx_, &beta,
+	F77_FUNC(dsbmv) (uplo_, &n_, &k_, &alpha, a_, &lda_, x, &incx_, &beta,
 			 y, &incy_);
 }
 
@@ -157,20 +159,21 @@ void blas_dspmv(enum blas_uplo uplo, size_t n, double alpha,
 }
 
 void blas_dsymv(enum blas_uplo uplo, size_t n, double alpha,
-		const double *a, size_t lda, const double *x, size_t incx,
+		const struct dmatrix *a, const double *x, size_t incx,
 		double beta, double *y, size_t incy)
+
 {
 	F77_UPLO(uplo);
 	F77_INT(n);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(incx);
 	F77_INT(incy);
-	F77_FUNC(dsymv) (uplo_, &n_, &alpha, a, &lda_, x, &incx_,
+	F77_FUNC(dsymv) (uplo_, &n_, &alpha, a_, &lda_, x, &incx_,
 			 &beta, y, &incy_);
 }
 
 void blas_dtbmv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
-		size_t n, size_t k, const double *a, size_t lda, double *x,
+		size_t n, size_t k, const struct dmatrix *a, double *x,
 		size_t incx)
 {
 	F77_UPLO(uplo);
@@ -178,9 +181,9 @@ void blas_dtbmv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
 	F77_DIAG(diag);
 	F77_INT(n);
 	F77_INT(k);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(incx);
-	F77_FUNC(dtbmv) (uplo_, trans_, diag_, &n_, &k_, a, &lda_, x, &incx_);
+	F77_FUNC(dtbmv) (uplo_, trans_, diag_, &n_, &k_, a_, &lda_, x, &incx_);
 }
 
 void blas_dtpmv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
@@ -195,19 +198,19 @@ void blas_dtpmv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
 }
 
 void blas_dtrmv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
-		size_t n, const double *a, size_t lda, double *x, size_t incx)
+		size_t n, const struct dmatrix *a, double *x, size_t incx)
 {
 	F77_UPLO(uplo);
 	F77_TRANS(trans);
 	F77_DIAG(diag);
 	F77_INT(n);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(incx);
-	F77_FUNC(dtrmv) (uplo_, trans_, diag_, &n_, a, &lda_, x, &incx_);
+	F77_FUNC(dtrmv) (uplo_, trans_, diag_, &n_, a_, &lda_, x, &incx_);
 }
 
 void blas_dtbsv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
-		size_t n, size_t k, const double *a, size_t lda, double *x,
+		size_t n, size_t k, const struct dmatrix *a, double *x,
 		size_t incx)
 {
 	F77_UPLO(uplo);
@@ -215,9 +218,9 @@ void blas_dtbsv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
 	F77_DIAG(diag);
 	F77_INT(n);
 	F77_INT(k);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(incx);
-	F77_FUNC(dtbsv) (uplo_, trans_, diag_, &n_, &k_, a, &lda_, x, &incx_);
+	F77_FUNC(dtbsv) (uplo_, trans_, diag_, &n_, &k_, a_, &lda_, x, &incx_);
 }
 
 void blas_dtpsv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
@@ -232,36 +235,36 @@ void blas_dtpsv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
 }
 
 void blas_dtrsv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
-		size_t n, const double *a, size_t lda, double *x, size_t incx)
+		size_t n, const struct dmatrix *a, double *x, size_t incx)
 {
 	F77_UPLO(uplo);
 	F77_TRANS(trans);
 	F77_DIAG(diag);
 	F77_INT(n);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(incx);
-	F77_FUNC(dtrsv) (uplo_, trans_, diag_, &n_, a, &lda_, x, &incx_);
+	F77_FUNC(dtrsv) (uplo_, trans_, diag_, &n_, a_, &lda_, x, &incx_);
 }
 
 void blas_dger(size_t m, size_t n, double alpha, const double *x,
-	       size_t incx, const double *y, size_t incy, double *a, size_t lda)
+	       size_t incx, const double *y, size_t incy, struct dmatrix *a)
 {
 	F77_INT(m);
 	F77_INT(n);
 	F77_INT(incx);
 	F77_INT(incy);
-	F77_INT(lda);
-	F77_FUNC(dger) (&m_, &n_, &alpha, x, &incx_, y, &incy_, a, &lda_);
+	F77_DMATRIX(a);
+	F77_FUNC(dger) (&m_, &n_, &alpha, x, &incx_, y, &incy_, a_, &lda_);
 }
 
 void blas_dsyr(enum blas_uplo uplo, size_t n, double alpha,
-	       const double *x, size_t incx, double *a, size_t lda)
+	       const double *x, size_t incx, struct dmatrix *a)
 {
 	F77_UPLO(uplo);
 	F77_INT(n);
 	F77_INT(incx);
-	F77_INT(lda);
-	F77_FUNC(dsyr) (uplo_, &n_, &alpha, x, &incx_, a, &lda_);
+	F77_DMATRIX(a);
+	F77_FUNC(dsyr) (uplo_, &n_, &alpha, x, &incx_, a_, &lda_);
 }
 
 void blas_dspr(enum blas_uplo uplo, size_t n, double alpha,
@@ -275,14 +278,14 @@ void blas_dspr(enum blas_uplo uplo, size_t n, double alpha,
 
 void blas_dsyr2(enum blas_uplo uplo, size_t n, double alpha,
 		const double *x, size_t incx, const double *y, size_t incy,
-		double *a, size_t lda)
+		struct dmatrix *a)
 {
 	F77_UPLO(uplo);
 	F77_INT(n);
 	F77_INT(incx);
 	F77_INT(incy);
-	F77_INT(lda);
-	F77_FUNC(dsyr2) (uplo_, &n_, &alpha, x, &incx_, y, &incy_, a, &lda_);
+	F77_DMATRIX(a);
+	F77_FUNC(dsyr2) (uplo_, &n_, &alpha, x, &incx_, y, &incy_, a_, &lda_);
 }
 
 void blas_dspr2(enum blas_uplo uplo, size_t n, double alpha,
@@ -299,26 +302,24 @@ void blas_dspr2(enum blas_uplo uplo, size_t n, double alpha,
 /* Level 3 */
 
 void blas_dgemm(enum blas_trans transa, enum blas_trans transb, size_t m,
-		size_t n, size_t k, double alpha, const double *a,
-		size_t lda, const double *b, size_t ldb, double beta,
-		double *c, size_t ldc)
+		size_t n, size_t k, double alpha, const struct dmatrix *a,
+		const struct dmatrix *b, double beta, struct dmatrix *c)
 {
 	F77_TRANS(transa);
 	F77_TRANS(transb);
 	F77_INT(m);
 	F77_INT(n);
 	F77_INT(k);
-	F77_INT(lda);
-	F77_INT(ldb);
-	F77_INT(ldc);
-	F77_FUNC(dgemm) (transa_, transb_, &m_, &n_, &k_, &alpha, a, &lda_, b,
-			 &ldb_, &beta, c, &ldc_);
+	F77_DMATRIX(a);
+	F77_DMATRIX(b);
+	F77_DMATRIX(c);	
+	F77_FUNC(dgemm) (transa_, transb_, &m_, &n_, &k_, &alpha, a_, &lda_, b_,
+			 &ldb_, &beta, c_, &ldc_);
 }
 
 void blas_dtrsm(enum blas_side side, enum blas_uplo uplo,
 		enum blas_trans transa, enum blas_diag diag, size_t m, size_t n,
-		double alpha, const double *a, size_t lda, double *b,
-		size_t ldb)
+		double alpha, const struct dmatrix *a, struct dmatrix *b)
 {
 	F77_SIDE(side);
 	F77_UPLO(uplo);
@@ -326,16 +327,15 @@ void blas_dtrsm(enum blas_side side, enum blas_uplo uplo,
 	F77_DIAG(diag);
 	F77_INT(m);
 	F77_INT(n);
-	F77_INT(lda);
-	F77_INT(ldb);
-	F77_FUNC(dtrsm) (side_, uplo_, transa_, diag_, &m_, &n_, &alpha, a,
-			 &lda_, b, &ldb_);
+	F77_DMATRIX(a);
+	F77_DMATRIX(b);
+	F77_FUNC(dtrsm) (side_, uplo_, transa_, diag_, &m_, &n_, &alpha, a_,
+			 &lda_, b_, &ldb_);
 }
 
 void blas_dtrmm(enum blas_side side, enum blas_uplo uplo,
 		enum blas_trans transa, enum blas_diag diag, size_t m, size_t n,
-		double alpha, const double *a, size_t lda, double *b,
-		size_t ldb)
+		double alpha, const struct dmatrix *a, struct dmatrix *b)
 {
 	F77_SIDE(side);
 	F77_UPLO(uplo);
@@ -343,53 +343,52 @@ void blas_dtrmm(enum blas_side side, enum blas_uplo uplo,
 	F77_DIAG(diag);
 	F77_INT(m);
 	F77_INT(n);
-	F77_INT(lda);
-	F77_INT(ldb);
-	F77_FUNC(dtrmm) (side_, uplo_, transa_, diag_, &m_, &n_, &alpha, a,
-			 &lda_, b, &ldb_);
+	F77_DMATRIX(a);
+	F77_DMATRIX(b);
+	F77_FUNC(dtrmm) (side_, uplo_, transa_, diag_, &m_, &n_, &alpha, a_,
+			 &lda_, b_, &ldb_);
 }
 
 void blas_dsymm(enum blas_side side, enum blas_uplo uplo, size_t m, size_t n,
-		double alpha, const double *a, size_t lda,
-		const double *b, size_t ldb, double beta, double *c, size_t ldc)
+		double alpha, const struct dmatrix *a,
+		const struct dmatrix *b, double beta, struct dmatrix *c)
 {
 	F77_SIDE(side);
 	F77_UPLO(uplo);
 	F77_INT(m);
 	F77_INT(n);
-	F77_INT(lda);
-	F77_INT(ldb);
-	F77_INT(ldc);
-	F77_FUNC(dsymm) (side_, uplo_, &m_, &n_, &alpha, a, &lda_, b, &ldb_,
-			 &beta, c, &ldc_);
+	F77_DMATRIX(a);
+	F77_DMATRIX(b);
+	F77_DMATRIX(c);	
+	F77_FUNC(dsymm) (side_, uplo_, &m_, &n_, &alpha, a_, &lda_, b_, &ldb_,
+			 &beta, c_, &ldc_);
 }
 
 void blas_dsyrk(enum blas_uplo uplo, enum blas_trans trans, size_t n, size_t k,
-		double alpha, const double *a, size_t lda,
-		double beta, double *c, size_t ldc)
+		double alpha, const struct dmatrix *a,
+		double beta, struct dmatrix *c)
 {
 	F77_UPLO(uplo);
 	F77_TRANS(trans);
 	F77_INT(n);
 	F77_INT(k);
-	F77_INT(lda);
-	F77_INT(ldc);
-	F77_FUNC(dsyrk) (uplo_, trans_, &n_, &k_, &alpha, a, &lda_,
-			 &beta, c, &ldc_);
+	F77_DMATRIX(a);
+	F77_DMATRIX(c);	
+	F77_FUNC(dsyrk) (uplo_, trans_, &n_, &k_, &alpha, a_, &lda_,
+			 &beta, c_, &ldc_);
 }
 
 void blas_dsyr2k(enum blas_uplo uplo, enum blas_trans trans, size_t n, size_t k,
-		 double alpha, const double *a, size_t lda,
-		 const double *b, size_t ldb, double beta, double *c,
-		 size_t ldc)
+		 double alpha, const struct dmatrix *a,
+		 const struct dmatrix *b, double beta, struct dmatrix *c)
 {
 	F77_UPLO(uplo);
 	F77_TRANS(trans);
 	F77_INT(n);
 	F77_INT(k);
-	F77_INT(lda);
-	F77_INT(ldb);
-	F77_INT(ldc);
-	F77_FUNC(dsyr2k) (uplo_, trans_, &n_, &k_, &alpha, a, &lda_, b, &ldb_,
-			  &beta, c, &ldc_);
+	F77_DMATRIX(a);
+	F77_DMATRIX(b);
+	F77_DMATRIX(c);	
+	F77_FUNC(dsyr2k) (uplo_, trans_, &n_, &k_, &alpha, a_, &lda_, b_, &ldb_,
+			  &beta, c_, &ldc_);
 }

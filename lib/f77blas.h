@@ -5,6 +5,10 @@
 
 #define F77_INT(n) f77int n ## _ = (f77int) n
 
+#define F77_DMATRIX(a) \
+	double * a ## _ = ((struct dmatrix *)(a))->data; \
+	f77int ld ## a ## _ = (f77int)((a)->lda);
+
 #define F77_TRANS(t) const char *t ## _ = (t == BLAS_TRANS ? "T" \
 		 			   : t == BLAS_CONJTRANS ? "C" : "N")
 #define F77_UPLO(u) const char *u ## _ = (u == BLAS_LOWER ? "L" : "U")

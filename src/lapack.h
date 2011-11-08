@@ -23,27 +23,27 @@ enum lapack_svdjob {
 };
 
 ptrdiff_t lapack_dgesdd(enum lapack_svdjob jobz, size_t m, size_t n,
-			double *a, size_t lda, double *s, double *u,
-			size_t ldu, double *vt, size_t ldvt,
-			double *work, size_t lwork, ptrdiff_t *iwork);
+			struct dmatrix *a, double *s, struct dmatrix *u,
+			struct dmatrix *vt, double *work, size_t lwork,
+			ptrdiff_t *iwork);
 
 size_t lapack_dgesdd_lwork(enum lapack_svdjob jobz, size_t m, size_t n,
 			   size_t *liwork);
 
 void lapack_dlacpy(enum lapack_copyjob uplo, size_t m, size_t n,
-		   const double *a, size_t lda, double *b, size_t ldb);
+		   const struct dmatrix *a, struct dmatrix *b);
 
 ptrdiff_t lapack_dposv(enum blas_uplo uplo, size_t n, size_t nrhs,
-		       double *a, size_t lda, double *b, size_t ldb);
+		       struct dmatrix *a, struct dmatrix *b);
 
 ptrdiff_t lapack_dsyevd(enum lapack_eigjob jobz, enum blas_uplo uplo, size_t n,
-			double *a, size_t lda, double *w, double *work,
+			struct dmatrix *a, double *w, double *work,
 			size_t lwork, ptrdiff_t *iwork, size_t liwork);
 size_t lapack_dsyevd_lwork(enum lapack_eigjob jobz, size_t n, size_t *liwork);
 
 ptrdiff_t lapack_dsysv(enum blas_uplo uplo, size_t n, size_t nrhs,
-		       double *a, size_t lda, ptrdiff_t *ipiv, double *b,
-		       size_t ldb, double *work, size_t lwork);
+		       struct dmatrix *a, ptrdiff_t *ipiv, struct dmatrix *b,
+		       double *work, size_t lwork);
 
 size_t lapack_dsysv_lwork(size_t n);
 

@@ -9,20 +9,20 @@
 #define MIN(a,b)	((a < b) ?  (a) : (b))
 
 ptrdiff_t lapack_dgesdd(enum lapack_svdjob jobz, size_t m, size_t n,
-			double *a, size_t lda, double *s, double *u,
-			size_t ldu, double *vt, size_t ldvt,
-			double *work, size_t lwork, ptrdiff_t *iwork)
+			struct dmatrix *a, double *s, struct dmatrix *u,
+			struct dmatrix *vt, double *work, size_t lwork,
+			ptrdiff_t *iwork)
 {
 	F77_SVDJOB(jobz);
 	F77_INT(m);
 	F77_INT(n);
-	F77_INT(lda);
-	F77_INT(ldu);
-	F77_INT(ldvt);
+	F77_DMATRIX(a);
+	F77_DMATRIX(u);
+	F77_DMATRIX(vt);
 	F77_INT(lwork);
 	f77int info;
 
-	F77_FUNC(dgesdd) (jobz_, &m_, &n_, a, &lda_, s, u, &ldu_, vt, &ldvt_,
+	F77_FUNC(dgesdd) (jobz_, &m_, &n_, a_, &lda_, s, u_, &ldu_, vt_, &ldvt_,
 			  work, &lwork_, (f77int *)iwork, &info);
 	return (ptrdiff_t)info;
 }
@@ -33,8 +33,11 @@ size_t lapack_dgesdd_lwork(enum lapack_svdjob jobz, size_t m, size_t n,
 	double work = 0;
 	ptrdiff_t info;
 
-	info = lapack_dgesdd(jobz, m, n, NULL, MAX(1, m), NULL, NULL, MAX(1, m),
-			     NULL, MAX(1, n), &work, SIZE_MAX, NULL);
+	struct dmatrix a  = { NULL, MAX(1, m) };
+	struct dmatrix u  = { NULL, MAX(1, m) };
+	struct dmatrix vt = { NULL, MAX(1, n) };
+	
+	info = lapack_dgesdd(jobz, m, n, &a, NULL, &u, &vt, &work, SIZE_MAX, NULL);
 	assert(info == 0);
 
 	if (liwork)
@@ -44,44 +47,44 @@ size_t lapack_dgesdd_lwork(enum lapack_svdjob jobz, size_t m, size_t n,
 }
 
 void lapack_dlacpy(enum lapack_copyjob uplo, size_t m, size_t n,
-		   const double *a, size_t lda, double *b, size_t ldb)
+		   const struct dmatrix *a, struct dmatrix *b)
 {
 	F77_COPYJOB(uplo);
 	F77_INT(m);
 	F77_INT(n);
-	F77_INT(lda);
-	F77_INT(ldb);
+	F77_DMATRIX(a);
+	F77_DMATRIX(b);	
 
-	F77_FUNC(dlacpy) (uplo_, &m_, &n_, a, &lda_, b, &ldb_);
+	F77_FUNC(dlacpy) (uplo_, &m_, &n_, a_, &lda_, b_, &ldb_);
 }
 
 ptrdiff_t lapack_dposv(enum blas_uplo uplo, size_t n, size_t nrhs,
-		       double *a, size_t lda, double *b, size_t ldb)
+		       struct dmatrix *a, struct dmatrix *b)
 {
 	F77_UPLO(uplo);
 	F77_INT(n);
 	F77_INT(nrhs);
-	F77_INT(lda);
-	F77_INT(ldb);
+	F77_DMATRIX(a);
+	F77_DMATRIX(b);
 	f77int info;
 
-	F77_FUNC(dposv) (uplo_, &n_, &nrhs_, a, &lda_, b, &ldb_, &info);
+	F77_FUNC(dposv) (uplo_, &n_, &nrhs_, a_, &lda_, b_, &ldb_, &info);
 	return (ptrdiff_t)info;
 }
 
 ptrdiff_t lapack_dsyevd(enum lapack_eigjob jobz, enum blas_uplo uplo, size_t n,
-			double *a, size_t lda, double *w, double *work,
+			struct dmatrix *a, double *w, double *work,
 			size_t lwork, ptrdiff_t *iwork, size_t liwork)
 {
 	F77_EIGJOB(jobz);
 	F77_UPLO(uplo);
 	F77_INT(n);
-	F77_INT(lda);
+	F77_DMATRIX(a);
 	F77_INT(lwork);
 	F77_INT(liwork);
 	f77int info;
 
-	F77_FUNC(dsyevd) (jobz_, uplo_, &n_, a, &lda_, w, work, &lwork_,
+	F77_FUNC(dsyevd) (jobz_, uplo_, &n_, a_, &lda_, w, work, &lwork_,
 			  (f77int *)iwork, &liwork_, &info);
 	return (ptrdiff_t)info;
 }
@@ -92,7 +95,9 @@ size_t lapack_dsyevd_lwork(enum lapack_eigjob jobz, size_t n, size_t *liwork)
 	f77int iwork = 0;
 	ptrdiff_t info;
 
-	info = lapack_dsyevd(jobz, BLAS_UPPER, n, NULL, MAX(1, n), NULL,
+	struct dmatrix a = { NULL, MAX(1, n) };
+	
+	info = lapack_dsyevd(jobz, BLAS_UPPER, n, &a, NULL,
 			     &work, SIZE_MAX, (ptrdiff_t *)&iwork, SIZE_MAX);
 	assert(info == 0);
 
@@ -103,18 +108,18 @@ size_t lapack_dsyevd_lwork(enum lapack_eigjob jobz, size_t n, size_t *liwork)
 }
 
 ptrdiff_t lapack_dsysv(enum blas_uplo uplo, size_t n, size_t nrhs,
-		       double *a, size_t lda, ptrdiff_t *ipiv, double *b,
-		       size_t ldb, double *work, size_t lwork)
+		       struct dmatrix *a, ptrdiff_t *ipiv, struct dmatrix *b,
+		       double *work, size_t lwork)
 {
 	F77_UPLO(uplo);
 	F77_INT(n);
 	F77_INT(nrhs);
-	F77_INT(lda);
-	F77_INT(ldb);
+	F77_DMATRIX(a);
+	F77_DMATRIX(b);
 	F77_INT(lwork);
 	f77int info;
 
-	F77_FUNC(dsysv) (uplo_, &n_, &nrhs_, a, &lda_, (f77int *)ipiv, b,
+	F77_FUNC(dsysv) (uplo_, &n_, &nrhs_, a_, &lda_, (f77int *)ipiv, b_,
 			 &ldb_, work, &lwork_, &info);
 	if (ipiv)
 		f77int_unpack(ipiv, n);
@@ -127,8 +132,10 @@ size_t lapack_dsysv_lwork(size_t n)
 	double work = 0;
 	ptrdiff_t info;
 
-	info = lapack_dsysv(BLAS_UPPER, n, 1, NULL, MAX(1, n), NULL, NULL,
-			    MAX(1, n), &work, SIZE_MAX);
+	struct dmatrix a = { NULL, MAX(1, n) };
+	struct dmatrix b = { NULL, MAX(1, n) };
+	
+	info = lapack_dsysv(BLAS_UPPER, n, 1, &a, NULL, &b, &work, SIZE_MAX);
 	assert(info == 0);
 	return (size_t)work;
 }

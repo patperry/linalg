@@ -51,7 +51,7 @@ void sblas_dsctr(const double *x, const struct vpattern *pat, double *y);
 
 /* y = alpha * \sum_{i = 0}^{nz-1} { op(a)[,indx[i]] * x[i] }  +  beta * y */
 void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n,
-		  double alpha, const double *a, size_t lda, const double *x,
+		  double alpha, const struct dmatrix *a, const double *x,
 		  const struct vpattern *pat, double beta, double *y);
 
 void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
@@ -60,6 +60,6 @@ void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 
 void sblas_dcscsctr(enum blas_trans trans, size_t n,
 		    const double *a, const size_t *inda, const size_t *offa,
-		    double *b, size_t ldb);
+		    struct dmatrix *b);
 
 #endif /* LINALG_SBLAS_H */
