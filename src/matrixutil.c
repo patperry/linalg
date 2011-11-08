@@ -27,7 +27,8 @@ void matrix_dscal(size_t m, size_t n, double alpha, struct dmatrix *a)
 	}
 }
 
-void matrix_daxpy(size_t m, size_t n, double alpha, const struct dmatrix *x, struct dmatrix *y)
+void matrix_daxpy(size_t m, size_t n, double alpha, const struct dmatrix *x,
+		  struct dmatrix *y)
 {
 	if (x->lda == m && y->lda == m) {
 		blas_daxpy(m * n, alpha, x->data, 1, y->data, 1);
@@ -51,4 +52,3 @@ void matrix_dtrans(size_t m, size_t n, const struct dmatrix *a,
 		blas_dcopy(m, MATRIX_PTR(a, 0, j), 1, MATRIX_PTR(b, j, 0), ldb);
 	}
 }
-

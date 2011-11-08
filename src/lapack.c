@@ -33,11 +33,12 @@ size_t lapack_dgesdd_lwork(enum lapack_svdjob jobz, size_t m, size_t n,
 	double work = 0;
 	ptrdiff_t info;
 
-	struct dmatrix a  = { NULL, MAX(1, m) };
-	struct dmatrix u  = { NULL, MAX(1, m) };
+	struct dmatrix a = { NULL, MAX(1, m) };
+	struct dmatrix u = { NULL, MAX(1, m) };
 	struct dmatrix vt = { NULL, MAX(1, n) };
-	
-	info = lapack_dgesdd(jobz, m, n, &a, NULL, &u, &vt, &work, SIZE_MAX, NULL);
+
+	info =
+	    lapack_dgesdd(jobz, m, n, &a, NULL, &u, &vt, &work, SIZE_MAX, NULL);
 	assert(info == 0);
 
 	if (liwork)
@@ -53,7 +54,7 @@ void lapack_dlacpy(enum lapack_copyjob uplo, size_t m, size_t n,
 	F77_INT(m);
 	F77_INT(n);
 	F77_DMATRIX(a);
-	F77_DMATRIX(b);	
+	F77_DMATRIX(b);
 
 	F77_FUNC(dlacpy) (uplo_, &m_, &n_, a_, &lda_, b_, &ldb_);
 }
@@ -96,7 +97,7 @@ size_t lapack_dsyevd_lwork(enum lapack_eigjob jobz, size_t n, size_t *liwork)
 	ptrdiff_t info;
 
 	struct dmatrix a = { NULL, MAX(1, n) };
-	
+
 	info = lapack_dsyevd(jobz, BLAS_UPPER, n, &a, NULL,
 			     &work, SIZE_MAX, (ptrdiff_t *)&iwork, SIZE_MAX);
 	assert(info == 0);
@@ -134,7 +135,7 @@ size_t lapack_dsysv_lwork(size_t n)
 
 	struct dmatrix a = { NULL, MAX(1, n) };
 	struct dmatrix b = { NULL, MAX(1, n) };
-	
+
 	info = lapack_dsysv(BLAS_UPPER, n, 1, &a, NULL, &b, &work, SIZE_MAX);
 	assert(info == 0);
 	return (size_t)work;

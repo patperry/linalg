@@ -45,8 +45,6 @@ void sblas_dgthrz(double *y, double *x, const struct vpattern *pat);
 /* y[indx[i]] = x[i] for i = 0, ..., nz-1 */
 void sblas_dsctr(const double *x, const struct vpattern *pat, double *y);
 
-
-
 /* Level 2 */
 
 /* y = alpha * \sum_{i = 0}^{nz-1} { op(a)[,indx[i]] * x[i] }  +  beta * y */

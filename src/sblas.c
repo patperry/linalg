@@ -9,13 +9,12 @@ extern void xalloc_die(void);
 
 static void *xrealloc(void *ptr, size_t size)
 {
-        void *res = realloc(ptr, size);
-        if (!res) {
-                xalloc_die();
-        }
-        return res;
+	void *res = realloc(ptr, size);
+	if (!res) {
+		xalloc_die();
+	}
+	return res;
 }
-
 
 /* 0, 5, 11, 20, 34, 55, 86, 133, 203, 308, ... */
 #define ARRAY_DELTA(n) \
@@ -123,8 +122,7 @@ void sblas_daxpyi(double alpha, const double *x, const struct vpattern *pat,
 }
 
 /* x[0] * y[indx[0]] + ... + x[nz-1] * y[indx[nz-1]] */
-double sblas_ddoti(const double *x, const struct vpattern *pat,
-		   const double *y)
+double sblas_ddoti(const double *x, const struct vpattern *pat, const double *y)
 {
 	size_t nz = pat->nz;
 	const size_t *indx = pat->indx;
@@ -193,13 +191,15 @@ void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n,
 		size_t i;
 
 		for (i = 0; i < nz; i++) {
-			blas_daxpy(m, alpha * x[i], a->data + indx[i] * a->lda, 1, y, 1);
+			blas_daxpy(m, alpha * x[i], a->data + indx[i] * a->lda,
+				   1, y, 1);
 		}
 	} else {
 		size_t j;
 
 		for (j = 0; j < n; j++) {
-			y[j] += alpha * sblas_ddoti(x, pat, a->data + j * a->lda);
+			y[j] +=
+			    alpha * sblas_ddoti(x, pat, a->data + j * a->lda);
 		}
 	}
 }
@@ -219,7 +219,7 @@ void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 
 	if (trans == BLAS_NOTRANS) {
 		for (j = 0; j < n; j++) {
-			size_t nz = offa[j+1] - offa[j];
+			size_t nz = offa[j + 1] - offa[j];
 			const double *val = a + offa[j];
 			const size_t *ind = inda + offa[j];
 			struct vpattern pat = vpattern_make(ind, nz);
@@ -228,7 +228,7 @@ void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 		}
 	} else {
 		for (j = 0; j < n; j++) {
-			size_t nz = offa[j+1] - offa[j];
+			size_t nz = offa[j + 1] - offa[j];
 			const double *val = a + offa[j];
 			const size_t *ind = inda + offa[j];
 			struct vpattern pat = vpattern_make(ind, nz);
@@ -237,7 +237,6 @@ void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 		}
 	}
 }
-
 
 void sblas_dcscsctr(enum blas_trans trans, size_t n,
 		    const double *a, const size_t *inda, const size_t *offa,
@@ -249,7 +248,7 @@ void sblas_dcscsctr(enum blas_trans trans, size_t n,
 		for (j = 0; j < n; j++) {
 			const double *val = a + offa[j];
 			const size_t *ind = inda + offa[j];
-			size_t iz, nz = offa[j+1] - offa[j];
+			size_t iz, nz = offa[j + 1] - offa[j];
 
 			for (iz = 0; iz < nz; iz++) {
 				b->data[ind[iz] + j * b->lda] = val[iz];
@@ -259,7 +258,7 @@ void sblas_dcscsctr(enum blas_trans trans, size_t n,
 		for (j = 0; j < n; j++) {
 			const double *val = a + offa[j];
 			const size_t *ind = inda + offa[j];
-			size_t iz, nz = offa[j+1] - offa[j];
+			size_t iz, nz = offa[j + 1] - offa[j];
 
 			for (iz = 0; iz < nz; iz++) {
 				b->data[j + ind[iz] * b->lda] = val[iz];

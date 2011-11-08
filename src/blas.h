@@ -150,5 +150,4 @@ void blas_dsyr2k(enum blas_uplo uplo, enum blas_trans trans, size_t n, size_t k,
 		 double alpha, const struct dmatrix *a,
 		 const struct dmatrix *b, double beta, struct dmatrix *c);
 
-
 #endif /* BLAS_H */
