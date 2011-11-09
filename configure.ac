@@ -17,7 +17,7 @@ AC_CONFIG_SRCDIR([src/blas.h])
 
 dnl Checks for programs.
 AC_PROG_CC
-AC_PROG_LIBTOOL
+AC_PROG_RANLIB
 
 dnl Checks for libraries
 AX_CHECK_BLAS
