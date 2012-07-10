@@ -15,6 +15,8 @@ void vpattern_deinit(struct vpattern *pat);
 void vpattern_clear(struct vpattern *pat);
 size_t vpattern_grow(struct vpattern *pat, size_t delta);
 ptrdiff_t vpattern_find(const struct vpattern *pat, size_t i);
+size_t vpattern_lb(const struct vpattern *pat, size_t i);
+size_t vpattern_ub(const struct vpattern *pat, size_t i);
 size_t vpattern_search(struct vpattern *pat, size_t i, int *insp);
 
 static inline struct vpattern vpattern_make(const size_t *indx, size_t nz)

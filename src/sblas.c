@@ -81,6 +81,45 @@ ptrdiff_t vpattern_find(const struct vpattern *pat, size_t i)
 	return ~ix;
 }
 
+
+size_t vpattern_lb(const struct vpattern *pat, size_t i)
+{
+	const size_t *base = pat->indx, *ptr;
+	size_t nz;
+
+	for (nz = pat->nz; nz != 0; nz >>= 1) {
+		ptr = base + (nz >> 1);
+		if (i == *ptr)
+			return ptr - pat->indx;
+		if (i > *ptr) {
+			base = ptr + 1;
+			nz--;
+		}
+	}
+
+	return base - pat->indx;
+}
+
+
+size_t vpattern_ub(const struct vpattern *pat, size_t i)
+{
+	const size_t *base = pat->indx, *ptr;
+	size_t nz;
+
+	for (nz = pat->nz; nz != 0; nz >>= 1) {
+		ptr = base + (nz >> 1);
+		if (i == *ptr)
+			return ptr - pat->indx + 1;
+		if (i > *ptr) {
+			base = ptr + 1;
+			nz--;
+		}
+	}
+
+	return base - pat->indx;
+}
+
+
 size_t vpattern_search(struct vpattern *pat, size_t i, int *insp)
 {
 	const size_t *base = pat->indx, *ptr;
