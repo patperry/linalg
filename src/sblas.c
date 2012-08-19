@@ -145,11 +145,9 @@ size_t vpattern_search(struct vpattern *pat, size_t i, int *insp)
 }
 
 /* y[indx[i]] += alpha * x[i] for i = 0, ..., nz-1 */
-void sblas_daxpyi(double alpha, const double *x, const struct vpattern *pat,
+void sblas_daxpyi(size_t nz, double alpha, const double *x, const size_t *indx,
 		  double *y)
 {
-	size_t nz = pat->nz;
-	const size_t *indx = pat->indx;
 	size_t i;
 
 	for (i = 0; i < nz; i++) {
@@ -158,10 +156,9 @@ void sblas_daxpyi(double alpha, const double *x, const struct vpattern *pat,
 }
 
 /* x[0] * y[indx[0]] + ... + x[nz-1] * y[indx[nz-1]] */
-double sblas_ddoti(const double *x, const struct vpattern *pat, const double *y)
+double sblas_ddoti(size_t nz, const double *x, const size_t *indx,
+		   const double *y)
 {
-	size_t nz = pat->nz;
-	const size_t *indx = pat->indx;
 	double dot = 0.0;
 	size_t i;
 
@@ -173,10 +170,8 @@ double sblas_ddoti(const double *x, const struct vpattern *pat, const double *y)
 }
 
 /* x[i] := y[indx[i]] for i = 0, ..., nz-1 */
-void sblas_dgthr(const double *y, double *x, const struct vpattern *pat)
+void sblas_dgthr(size_t nz, const double *y, double *x, const size_t *indx)
 {
-	size_t nz = pat->nz;
-	const size_t *indx = pat->indx;
 	size_t i;
 
 	for (i = 0; i < nz; i++) {
@@ -185,10 +180,8 @@ void sblas_dgthr(const double *y, double *x, const struct vpattern *pat)
 }
 
 /* x[i] := y[indx[i]]; * y[indx[i]] := 0 for i = 0, ..., nz-1 */
-void sblas_dgthrz(double *y, double *x, const struct vpattern *pat)
+void sblas_dgthrz(size_t nz, double *y, double *x, const size_t *indx)
 {
-	size_t nz = pat->nz;
-	const size_t *indx = pat->indx;
 	size_t i;
 
 	for (i = 0; i < nz; i++) {
@@ -198,10 +191,8 @@ void sblas_dgthrz(double *y, double *x, const struct vpattern *pat)
 }
 
 /* y[indx[i]] = x[i] for i = 0, ..., nz-1 */
-void sblas_dsctr(const double *x, const struct vpattern *pat, double *y)
+void sblas_dsctr(size_t nz, const double *x, const size_t *indx, double *y)
 {
-	size_t nz = pat->nz;
-	const size_t *indx = pat->indx;
 	size_t i;
 
 	for (i = 0; i < nz; i++) {
@@ -209,9 +200,9 @@ void sblas_dsctr(const double *x, const struct vpattern *pat, double *y)
 	}
 }
 
-void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n,
+void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n, size_t nz,
 		  double alpha, const double *a, size_t lda, const double *x,
-		  const struct vpattern *pat, double beta, double *y)
+		  const size_t *indx, double beta, double *y)
 {
 	size_t ny = (trans == BLAS_NOTRANS ? m : n);
 
@@ -222,8 +213,6 @@ void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n,
 	}
 
 	if (trans == BLAS_NOTRANS) {
-		size_t nz = pat->nz;
-		const size_t *indx = pat->indx;
 		size_t i;
 
 		for (i = 0; i < nz; i++) {
@@ -233,7 +222,7 @@ void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n,
 		size_t j;
 
 		for (j = 0; j < n; j++) {
-			y[j] += alpha * sblas_ddoti(x, pat, a + j * lda);
+			y[j] += alpha * sblas_ddoti(nz, x, indx, a + j * lda);
 		}
 	}
 }
@@ -256,18 +245,16 @@ void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 			size_t nz = offa[j + 1] - offa[j];
 			const double *val = a + offa[j];
 			const size_t *ind = inda + offa[j];
-			struct vpattern pat = vpattern_make(ind, nz);
 
-			sblas_daxpyi(alpha * x[j], val, &pat, y);
+			sblas_daxpyi(nz, alpha * x[j], val, ind, y);
 		}
 	} else {
 		for (j = 0; j < n; j++) {
 			size_t nz = offa[j + 1] - offa[j];
 			const double *val = a + offa[j];
 			const size_t *ind = inda + offa[j];
-			struct vpattern pat = vpattern_make(ind, nz);
 
-			y[j] += alpha * sblas_ddoti(val, &pat, x);
+			y[j] += alpha * sblas_ddoti(nz, val, ind, x);
 		}
 	}
 }
