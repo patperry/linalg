@@ -24,10 +24,6 @@ enum blas_side {
 	BLAS_RIGHT = 142
 };
 
-#define MATRIX_PTR(a, lda, i, j)	((a) + (i) + (j) * (lda))
-#define MATRIX_ITEM(a, lda, i, j)	(*MATRIX_PTR(a, lda, i, j))
-#define MATRIX_COL(a, lda, j)		MATRIX_PTR(a, lda, 0, j)
-#define MATRIX_ROW(a, lda, i)		MATRIX_PTR(a, lda, i, 0)
 
 /* Level 1 */
 

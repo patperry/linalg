@@ -9,7 +9,7 @@ void matrix_dzero(size_t m, size_t n, double *a, size_t lda)
 	} else {
 		size_t j;
 		for (j = 0; j < n; j++) {
-			memset(MATRIX_PTR(a, lda, 0, j), 0, m * sizeof(double));
+			memset(a + j * lda, 0, m * sizeof(double));
 		}
 	}
 }
@@ -22,7 +22,7 @@ void matrix_dscal(size_t m, size_t n, double alpha, double *a, size_t lda)
 		size_t j;
 
 		for (j = 0; j < n; j++) {
-			blas_dscal(m, alpha, MATRIX_PTR(a, lda, 0, j), 1);
+			blas_dscal(m, alpha, a + j * lda, 1);
 		}
 	}
 }
@@ -36,8 +36,7 @@ void matrix_daxpy(size_t m, size_t n, double alpha, const double *x, size_t ldx,
 		size_t j;
 
 		for (j = 0; j < n; j++) {
-			blas_daxpy(m, alpha, MATRIX_COL(x, ldx, j), 1,
-				   MATRIX_COL(y, ldy, j), 1);
+			blas_daxpy(m, alpha, x + j * ldx, 1, y + j * ldy, 1);
 		}
 	}
 }
@@ -48,7 +47,6 @@ void matrix_dtrans(size_t m, size_t n, const double *a, size_t lda,
 	size_t j;
 
 	for (j = 0; j < n; j++) {
-		blas_dcopy(m, MATRIX_PTR(a, lda, 0, j), 1,
-			   MATRIX_PTR(b, ldb, j, 0), ldb);
+		blas_dcopy(m, a + j * lda, 1, b + j * ldb, ldb);
 	}
 }
