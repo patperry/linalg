@@ -24,14 +24,10 @@ enum blas_side {
 	BLAS_RIGHT = 142
 };
 
-struct dmatrix {
-	double *data;
-	size_t lda;
-};
-
-#define MATRIX_PTR(a, i, j)	((a)->data + (i) + (j) * (a)->lda)
-#define MATRIX_ITEM(a, i, j)	(*MATRIX_PTR(a, i, j))
-#define MATRIX_COL(a, j)	MATRIX_PTR(a, 0, j)
+#define MATRIX_PTR(a, lda, i, j)	((a) + (i) + (j) * (lda))
+#define MATRIX_ITEM(a, lda, i, j)	(*MATRIX_PTR(a, lda, i, j))
+#define MATRIX_COL(a, lda, j)		MATRIX_PTR(a, lda, 0, j)
+#define MATRIX_ROW(a, lda, i)		MATRIX_PTR(a, lda, i, 0)
 
 /* Level 1 */
 
@@ -67,16 +63,16 @@ void blas_dscal(size_t n, double alpha, double *x, size_t incx);
 /* Level 2 */
 
 void blas_dgemv(enum blas_trans trans, size_t m, size_t n, double alpha,
-		const struct dmatrix *a, const double *x, size_t incx,
+		const double *a, size_t lda, const double *x, size_t incx,
 		double beta, double *y, size_t incy);
 
 void blas_dgbmv(enum blas_trans trans, size_t m, size_t n, size_t kl, size_t ku,
-		double alpha, const struct dmatrix *a,
+		double alpha, const double *a, size_t lda,
 		const double *x, size_t incx, double beta, double *y,
 		size_t incy);
 
 void blas_dsbmv(enum blas_uplo uplo, size_t n, size_t k, double alpha,
-		const struct dmatrix *a, const double *x, size_t incx,
+		const double *a, size_t lda, const double *x, size_t incx,
 		double beta, double *y, size_t incy);
 
 void blas_dspmv(enum blas_uplo uplo, size_t n, double alpha,
@@ -84,41 +80,42 @@ void blas_dspmv(enum blas_uplo uplo, size_t n, double alpha,
 		double beta, double *y, size_t incy);
 
 void blas_dsymv(enum blas_uplo uplo, size_t n, double alpha,
-		const struct dmatrix *a, const double *x, size_t incx,
+		const double *a, size_t lda, const double *x, size_t incx,
 		double beta, double *y, size_t incy);
 
 void blas_dtbmv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
-		size_t n, size_t k, const struct dmatrix *a, double *x,
+		size_t n, size_t k, const double *a, size_t lda, double *x,
 		size_t incx);
 
 void blas_dtpmv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
 		size_t n, const double *ap, double *x, size_t incx);
 
 void blas_dtrmv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
-		size_t n, const struct dmatrix *a, double *x, size_t incx);
+		size_t n, const double *a, size_t lda, double *x, size_t incx);
 
 void blas_dtbsv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
-		size_t n, size_t k, const struct dmatrix *a, double *x,
+		size_t n, size_t k, const double *a, size_t lda, double *x,
 		size_t incx);
 
 void blas_dtpsv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
 		size_t n, const double *ap, double *x, size_t incx);
 
 void blas_dtrsv(enum blas_uplo uplo, enum blas_trans trans, enum blas_diag diag,
-		size_t n, const struct dmatrix *a, double *x, size_t incx);
+		size_t n, const double *a, size_t lda, double *x, size_t incx);
 
 void blas_dger(size_t m, size_t n, double alpha, const double *x,
-	       size_t incx, const double *y, size_t incy, struct dmatrix *a);
+	       size_t incx, const double *y, size_t incy, double *a,
+	       size_t lda);
 
 void blas_dsyr(enum blas_uplo uplo, size_t n, double alpha,
-	       const double *x, size_t incx, struct dmatrix *a);
+	       const double *x, size_t incx, double *a, size_t lda);
 
 void blas_dspr(enum blas_uplo uplo, size_t n, double alpha,
 	       const double *x, size_t incx, double *ap);
 
 void blas_dsyr2(enum blas_uplo uplo, size_t n, double alpha,
 		const double *x, size_t incx, const double *y, size_t incy,
-		struct dmatrix *a);
+		double *a, size_t lda);
 
 void blas_dspr2(enum blas_uplo uplo, size_t n, double alpha,
 		const double *x, size_t incx, const double *y, size_t incy,
@@ -127,27 +124,32 @@ void blas_dspr2(enum blas_uplo uplo, size_t n, double alpha,
 /* Level 3 */
 
 void blas_dgemm(enum blas_trans transa, enum blas_trans transb, size_t m,
-		size_t n, size_t k, double alpha, const struct dmatrix *a,
-		const struct dmatrix *b, double beta, struct dmatrix *c);
+		size_t n, size_t k, double alpha, const double *a, size_t lda,
+		const double *b, size_t ldb, double beta, double *c,
+		size_t ldc);
 
 void blas_dtrsm(enum blas_side side, enum blas_uplo uplo,
 		enum blas_trans transa, enum blas_diag diag, size_t m, size_t n,
-		double alpha, const struct dmatrix *a, struct dmatrix *b);
+		double alpha, const double *a, size_t lda, double *b,
+		size_t ldb);
 
 void blas_dtrmm(enum blas_side side, enum blas_uplo uplo,
 		enum blas_trans transa, enum blas_diag diag, size_t m, size_t n,
-		double alpha, const struct dmatrix *a, struct dmatrix *b);
+		double alpha, const double *a, size_t lda, double *b,
+		size_t ldb);
 
 void blas_dsymm(enum blas_side side, enum blas_uplo uplo, size_t m, size_t n,
-		double alpha, const struct dmatrix *a,
-		const struct dmatrix *b, double beta, struct dmatrix *c);
+		double alpha, const double *a, size_t lda,
+		const double *b, size_t ldb, double beta, double *c,
+		size_t ldc);
 
 void blas_dsyrk(enum blas_uplo uplo, enum blas_trans trans, size_t n, size_t k,
-		double alpha, const struct dmatrix *a,
-		double beta, struct dmatrix *c);
+		double alpha, const double *a, size_t lda,
+		double beta, double *c, size_t ldc);
 
 void blas_dsyr2k(enum blas_uplo uplo, enum blas_trans trans, size_t n, size_t k,
-		 double alpha, const struct dmatrix *a,
-		 const struct dmatrix *b, double beta, struct dmatrix *c);
+		 double alpha, const double *a, size_t lda,
+		 const double *b, size_t ldb, double beta, double *c,
+		 size_t ldc);
 
 #endif /* BLAS_H */

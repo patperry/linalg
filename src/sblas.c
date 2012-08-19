@@ -81,7 +81,6 @@ ptrdiff_t vpattern_find(const struct vpattern *pat, size_t i)
 	return ~ix;
 }
 
-
 size_t vpattern_lb(const struct vpattern *pat, size_t i)
 {
 	const size_t *base = pat->indx, *ptr;
@@ -100,7 +99,6 @@ size_t vpattern_lb(const struct vpattern *pat, size_t i)
 	return base - pat->indx;
 }
 
-
 size_t vpattern_ub(const struct vpattern *pat, size_t i)
 {
 	const size_t *base = pat->indx, *ptr;
@@ -118,7 +116,6 @@ size_t vpattern_ub(const struct vpattern *pat, size_t i)
 
 	return base - pat->indx;
 }
-
 
 size_t vpattern_search(struct vpattern *pat, size_t i, int *insp)
 {
@@ -213,7 +210,7 @@ void sblas_dsctr(const double *x, const struct vpattern *pat, double *y)
 }
 
 void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n,
-		  double alpha, const struct dmatrix *a, const double *x,
+		  double alpha, const double *a, size_t lda, const double *x,
 		  const struct vpattern *pat, double beta, double *y)
 {
 	size_t ny = (trans == BLAS_NOTRANS ? m : n);
@@ -230,15 +227,13 @@ void sblas_dgemvi(enum blas_trans trans, size_t m, size_t n,
 		size_t i;
 
 		for (i = 0; i < nz; i++) {
-			blas_daxpy(m, alpha * x[i], a->data + indx[i] * a->lda,
-				   1, y, 1);
+			blas_daxpy(m, alpha * x[i], a + indx[i] * lda, 1, y, 1);
 		}
 	} else {
 		size_t j;
 
 		for (j = 0; j < n; j++) {
-			y[j] +=
-			    alpha * sblas_ddoti(x, pat, a->data + j * a->lda);
+			y[j] += alpha * sblas_ddoti(x, pat, a + j * lda);
 		}
 	}
 }
@@ -279,7 +274,7 @@ void sblas_dcscmv(enum blas_trans trans, size_t m, size_t n, double alpha,
 
 void sblas_dcscsctr(enum blas_trans trans, size_t n,
 		    const double *a, const size_t *inda, const size_t *offa,
-		    struct dmatrix *b)
+		    double *b, size_t ldb)
 {
 	size_t j;
 
@@ -290,7 +285,7 @@ void sblas_dcscsctr(enum blas_trans trans, size_t n,
 			size_t iz, nz = offa[j + 1] - offa[j];
 
 			for (iz = 0; iz < nz; iz++) {
-				b->data[ind[iz] + j * b->lda] = val[iz];
+				b[ind[iz] + j * ldb] = val[iz];
 			}
 		}
 	} else {
@@ -300,7 +295,7 @@ void sblas_dcscsctr(enum blas_trans trans, size_t n,
 			size_t iz, nz = offa[j + 1] - offa[j];
 
 			for (iz = 0; iz < nz; iz++) {
-				b->data[j + ind[iz] * b->lda] = val[iz];
+				b[j + ind[iz] * ldb] = val[iz];
 			}
 		}
 	}
