@@ -77,6 +77,47 @@ ptrdiff_t lapack_dposv(enum blas_uplo uplo, size_t n, size_t nrhs,
 	return (ptrdiff_t)info;
 }
 
+
+ptrdiff_t lapack_dspevd(enum lapack_eigjob jobz, enum blas_uplo uplo, size_t n,
+			double *ap, double *w, double *z, size_t ldz, double *work, size_t lwork,
+			ptrdiff_t *iwork, size_t liwork)
+{
+	F77_EIGJOB(jobz);
+	F77_UPLO(uplo);
+	F77_INT(n);
+	F77_INT(ldz);
+	F77_INT(lwork);
+	F77_INT(liwork);
+	f77int info;
+
+	F77_FUNC(dspevd) (jobz_, uplo_, &n_, ap, w, z, &ldz_, work, &lwork_,
+			  (f77int *)iwork, &liwork_, &info);
+	return (ptrdiff_t)info;
+}
+
+
+size_t lapack_dspevd_lwork(enum lapack_eigjob jobz, size_t n, size_t *liwork)
+{
+	double *ap = NULL;
+	double *w = NULL;
+	double *z = NULL;
+	size_t ldz = MAX(1, n);
+	double work = 0;
+	f77int iwork = 0;
+	ptrdiff_t info;
+
+	info = lapack_dspevd(jobz, BLAS_UPPER, n, ap, w, z, ldz,
+			     &work, SIZE_MAX, (ptrdiff_t *)&iwork, SIZE_MAX);
+	assert(info == 0);
+
+	if (liwork)
+		*liwork = (size_t)iwork;
+
+	return (size_t)work;
+
+}
+
+
 ptrdiff_t lapack_dsyevd(enum lapack_eigjob jobz, enum blas_uplo uplo, size_t n,
 			double *a, size_t lda, double *w, double *work,
 			size_t lwork, ptrdiff_t *iwork, size_t liwork)
@@ -93,6 +134,7 @@ ptrdiff_t lapack_dsyevd(enum lapack_eigjob jobz, enum blas_uplo uplo, size_t n,
 			  (f77int *)iwork, &liwork_, &info);
 	return (ptrdiff_t)info;
 }
+
 
 size_t lapack_dsyevd_lwork(enum lapack_eigjob jobz, size_t n, size_t *liwork)
 {

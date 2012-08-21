@@ -24,6 +24,11 @@ int F77_FUNC(dposv) (const char *uplo, const f77int *n, const f77int *nrhs,
 		     double *a, const f77int *lda, double *b, const f77int *ldb,
 		     f77int *info);
 
+int F77_FUNC(dspevd) (const char *jobz, const char *uplo, const f77int *n,
+		      double *ap, double *w, double *z, const f77int *ldz, double *work,
+		      const f77int *lwork, f77int *iwork, const f77int *liwork,
+		      f77int *info);
+
 int F77_FUNC(dsyevd) (const char *jobz, const char *uplo, const f77int *n,
 		      double *a, const f77int *lda, double *w, double *work,
 		      const f77int *lwork, f77int *iwork, const f77int *liwork,
