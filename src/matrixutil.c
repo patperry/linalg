@@ -50,3 +50,59 @@ void matrix_dtrans(size_t m, size_t n, const double *a, size_t lda,
 		blas_dcopy(m, a + j * lda, 1, b + j, ldb);
 	}
 }
+
+void packed_dgthr(enum blas_uplo uplo, size_t n, const double *a, size_t lda,
+		  double *bp)
+{
+	size_t i;
+	double *dst = bp;
+	const double *src = a;
+
+	if (uplo == BLAS_LOWER) {
+		for (i = 0; i < n; i++) {
+			size_t len = n - i;
+
+			memcpy(dst, src + i, len * sizeof(*dst));
+
+			src += lda;
+			dst += len;
+		}
+	} else {
+		for (i = 0; i < n; i++) {
+			size_t len = i + 1;
+
+			memcpy(dst, src, len * sizeof(*dst));
+
+			src += lda;
+			dst += len;
+		}
+	}
+}
+
+void packed_dsctr(enum blas_uplo uplo, size_t n, const double *ap,
+		  double *b, size_t ldb)
+{
+	size_t i;
+	double *dst = b;
+	const double *src = ap;
+
+	if (uplo == BLAS_LOWER) {
+		for (i = 0; i < n; i++) {
+			size_t len = n - i;
+
+			memcpy(dst + i, src, len * sizeof(*dst));
+
+			dst += ldb;
+			src += len;
+		}
+	} else {
+		for (i = 0; i < n; i++) {
+			size_t len = i + 1;
+
+			memcpy(dst, src, len * sizeof(*dst));
+
+			dst += ldb;
+			src += len;
+		}
+	}
+}
